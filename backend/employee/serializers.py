@@ -115,7 +115,8 @@ class AddEmployeeSerializer(serializers.Serializer):
             start_date=validated_data.get("start_date"),
             location=validated_data.get("location", ""),
         )
-        create_and_send_invitation(user)
+        request = self.context.get("request")
+        create_and_send_invitation(user, request=request)
         log_activity(employee, "Joined the company")
         return employee
 

@@ -44,8 +44,9 @@ export function AddEmployeeModal({ isOpen, onClose }: AddEmployeeModalProps) {
       }).unwrap();
       setForm({ email: "", full_name: "", job_title: "", department: "" });
       onClose();
-    } catch (err: any) {
-      setFormError(err?.data?.email?.[0] || err?.data?.detail || "Couldn't add this employee.");
+    } catch (err: unknown) {
+      const errorData = (err as { data?: { email?: string[]; detail?: string } })?.data;
+      setFormError(errorData?.email?.[0] || errorData?.detail || "Couldn't add this employee.");
     }
   }
 

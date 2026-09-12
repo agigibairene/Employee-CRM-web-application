@@ -12,7 +12,13 @@ def create_and_send_invitation(user, request=None) -> Invitation:
         user=user, expires_at=timezone.now() + timedelta(days=3)
     )
 
-    activation_link = f"{settings.FRONTEND_URL}/activate?token={invitation.token}"
+    frontend_url = getattr(settings, "FRONTEND_URL", None)
+    if not frontend_url and request:
+        frontend_url = request.headers.get("Origin") or request.build_absolute_uri("/").rstrip("/")
+    if not frontend_url:
+        frontend_url = "http://localhost:5173"
+
+    activation_link = f"{frontend_url.rstrip('/')}/activate?token={invitation.token}"
 
     send_mail(
         subject="You've been added to the HR System — Activate your account",

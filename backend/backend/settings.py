@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_simplejwt',
+    'drf_spectacular',
     'corsheaders',
     "django_filters",
     'auth_app',
@@ -153,6 +154,7 @@ SPECTACULAR_SETTINGS = {
 DEFAULT_FROM_EMAIL = "hr@plasera.com"
 AUTH_USER_MODEL = "auth_app.User" 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+FRONTEND_URL = env("FRONTEND_URL", default="http://localhost:5173")
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
