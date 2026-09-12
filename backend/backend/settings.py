@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_simplejwt',
-    'corsheaders'
+    'corsheaders',
+    'auth_app'
 ]
 
 MIDDLEWARE = [
@@ -135,3 +136,7 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     )
 }
+
+DEFAULT_FROM_EMAIL = "hr@plasera.com"
+
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
