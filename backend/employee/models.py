@@ -54,6 +54,7 @@ class EmployeeActivity(models.Model):
 
     class Meta:
         ordering = ["-created_at"]
+        verbose_name_plural = 'Employee Activities'
 
 
 class LeaveRequest(models.Model):

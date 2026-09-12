@@ -5,6 +5,7 @@ from rest_framework import filters, permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
 
 from auth_app.permissions import IsHRAdmin
 
@@ -135,3 +136,19 @@ class DashboardView(APIView):
             ],
         }
         return Response(data)
+    
+    
+    
+class MeView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        employee_id = getattr(getattr(user, "employee", None), "id", None)
+        return Response({
+            "id": user.id,
+            "email": user.email,
+            "full_name": user.full_name,
+            "role": user.role,
+            "employee_id": employee_id,
+        })
