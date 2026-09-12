@@ -38,11 +38,20 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
     full_name = models.CharField(max_length=255, blank=True)
     role = models.CharField(max_length=20, choices=Role.choices, default=Role.EMPLOYEE)
-
-    # Inactive until they accept their invite and set a password
     is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(auto_now_add=True)
+
+    groups = models.ManyToManyField(
+        "auth.Group",
+        related_name="auth_app_users",
+        blank=True,
+    )
+    user_permissions = models.ManyToManyField(
+        "auth.Permission",
+        related_name="auth_app_users",
+        blank=True,
+    )
 
     objects = UserManager()
 
@@ -51,7 +60,6 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
-
 
 class Invitation(models.Model):
     user = models.OneToOneField(
