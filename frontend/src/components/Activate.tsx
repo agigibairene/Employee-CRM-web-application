@@ -1,4 +1,4 @@
-import { useState, FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAcceptInviteMutation } from "../redux/authApi";
 import { FormField } from "../ui/FormField";
@@ -37,14 +37,16 @@ function ActivateForm() {
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     setFormError(null);
+    if (!token) return;
     if (!validate()) return;
 
     try {
       await acceptInvite({ token, password }).unwrap();
       setIsDone(true);
       setTimeout(() => navigate("/login"), 2000);
-    } catch (err: any) {
-      setFormError(err?.data?.detail || "Unable to activate your account. Please try again.");
+    } catch (err: unknown) {
+      const errorData = (err as { data?: { detail?: string } })?.data;
+      setFormError(errorData?.detail || "Unable to activate your account. Please try again.");
     }
   }
 
@@ -71,7 +73,7 @@ function ActivateForm() {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="rounded-sm border border-border px-3 py-2 text-sm outline-none focus:border-primary"
+            className="rounded-sm border border-border px-3 py-2 text-sm outline-none focus:border-(--primary)"
           />
         </FormField>
 
@@ -81,7 +83,7 @@ function ActivateForm() {
             type="password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
-            className="rounded-sm border border-border px-3 py-2 text-sm outline-none focus:border-primary"
+            className="rounded-sm border border-border px-3 py-2 text-sm outline-none focus:border-(--primary)"
           />
         </FormField>
 

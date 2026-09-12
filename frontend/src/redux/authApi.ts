@@ -23,12 +23,25 @@ interface AxiosBaseQueryError {
   data?: unknown;
 }
 
-const axiosBaseQuery =({ baseUrl }: { baseUrl: string } = { baseUrl: "" }): BaseQueryFn<
-    {
-      url: string;
-      method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
-      data?: unknown;
-    },
+export interface CurrentUser {
+  id: number;
+  email: string;
+  full_name: string;
+  role: "EMPLOYEE" | "HR_ADMIN";
+  employee_id: number | null;
+}
+
+type AxiosBaseQueryArgs = {
+  url: string;
+  method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+  data?: unknown;
+};
+
+const axiosBaseQuery =
+  (
+    { baseUrl }: { baseUrl: string } = { baseUrl: "" }
+  ): BaseQueryFn<
+    AxiosBaseQueryArgs,
     unknown,
     AxiosBaseQueryError
   > =>
@@ -57,7 +70,7 @@ const axiosBaseQuery =({ baseUrl }: { baseUrl: string } = { baseUrl: "" }): Base
       return {
         error: {
           status: err.response?.status,
-          data: err.response?.data || err.message,
+          data: err.response?.data ?? err.message,
         },
       };
     }
@@ -73,6 +86,7 @@ export const authApi = createApi({
   }),
 
   endpoints: (builder) => ({
+    // Login
     login: builder.mutation<TokenPair, LoginRequest>({
       query: (credentials) => ({
         url: "/login/",
@@ -81,6 +95,7 @@ export const authApi = createApi({
       }),
     }),
 
+    // Accept invitation
     acceptInvite: builder.mutation<
       { detail: string },
       AcceptInviteRequest
@@ -91,10 +106,19 @@ export const authApi = createApi({
         data: payload,
       }),
     }),
+
+    // Get current authenticated user
+    getMe: builder.query<CurrentUser, void>({
+      query: () => ({
+        url: "/me/",
+        method: "GET",
+      }),
+    }),
   }),
 });
 
 export const {
   useLoginMutation,
   useAcceptInviteMutation,
+  useGetMeQuery,
 } = authApi;

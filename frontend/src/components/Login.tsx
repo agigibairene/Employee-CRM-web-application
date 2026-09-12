@@ -1,10 +1,10 @@
-import { useState, FormEvent } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, type FormEvent } from "react";
+import { Navigate, useNavigate } from "react-router-dom";
 import { useLoginMutation } from "../redux/authApi";
-import { setCredentials } from "../redux/authSlice";
+import { selectIsAuthenticated, setCredentials } from "../redux/authSlice";
 import { FormField } from "../ui/FormField";
 import { Button } from "../ui/Button";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch } from "../redux/store";
 
 interface FieldErrors {
@@ -15,12 +15,17 @@ interface FieldErrors {
 export default function LoginPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
+  const isAuthenticated = useSelector(selectIsAuthenticated);
   const [login, { isLoading }] = useLoginMutation();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [formError, setFormError] = useState<string | null>(null);
+
+  if (isAuthenticated) {
+    return <Navigate to="/dashboard" replace />;
+  }
 
   function validate(): boolean {
     const errors: FieldErrors = {};
@@ -40,10 +45,11 @@ export default function LoginPage() {
       const tokens = await login({ email, password }).unwrap();
       dispatch(setCredentials(tokens));
       navigate("/dashboard");
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errorData = (err as { data?: { detail?: string; non_field_errors?: string[] } })?.data;
       const message =
-        err?.data?.detail ||
-        err?.data?.non_field_errors?.[0] ||
+        errorData?.detail ||
+        errorData?.non_field_errors?.[0] ||
         "Unable to sign in. Please try again.";
       setFormError(message);
     }
@@ -78,7 +84,7 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@company.com"
-                className="rounded-sm border border-border px-3 py-2 text-sm outline-none focus:border-primary"
+                className="rounded-sm border border-border px-3 py-2 text-sm outline-none focus:border-(--primary)"
               />
             </FormField>
 
@@ -90,7 +96,7 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="rounded-sm border border-border px-3 py-2 text-sm outline-none focus:border-primary"
+                className="rounded-sm border border-border px-3 py-2 text-sm outline-none focus:border-(--primary)"
               />
             </FormField>
 

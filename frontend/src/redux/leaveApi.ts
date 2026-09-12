@@ -4,7 +4,7 @@ import type { LeaveRequest } from "../types";
 export const leaveApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     listLeaveRequests: builder.query<LeaveRequest[], void>({
-      query: () => "/leave-redashboardApi.tsquests/",
+      query: () => "/leave-requests/",
       providesTags: ["Leave"],
     }),
     submitLeaveRequest: builder.mutation<LeaveRequest, { start_date: string; end_date: string; reason: string }>({

@@ -1,6 +1,6 @@
 import { useGetDashboardStatsQuery } from "../redux/dashboardApi";
 import { StatCard } from "./StatCard";
-import { Skeleton } from "./Skeleton";
+import { Skeleton } from "../ui/Skeleton";
 import { EmptyState } from "./EmptyState";
 import { formatRelativeDate } from "../ui/formatDate";
 
@@ -25,7 +25,7 @@ export default function DashboardPage() {
 
       <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
         {isLoading ? (
-          Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-[92px]" />)
+          Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-23" />)
         ) : data ? (
           <>
             <StatCard label="Total employees" value={data.total_employees} />

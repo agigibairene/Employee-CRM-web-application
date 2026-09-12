@@ -1,5 +1,5 @@
 import { apiSlice } from "./apiSlice";
-import type { DashboardStats } from "./types";
+import type { DashboardStats } from "../types";
 
 export const dashboardApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
